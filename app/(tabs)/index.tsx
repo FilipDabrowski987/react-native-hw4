@@ -7,14 +7,25 @@ export default function HomeScreen() {
   const [error, setError] = useState("")
   const router = useRouter()
 
-  const handleNavigate = () => {
-    if (/^\d+$/.test(id)) {
-      setError("");
-      router.push(`/details/${id}`);
+  const handleSetId = () => {
+
+  const idNumber = Number(id);
+
+    if (!/^\d+$/.test(id)) {
+      setError("Proszę wpisać liczbę całkowitą")
+    } else if (idNumber < 1 || idNumber > 1000) {
+    setError("ID musi być liczbą z zakresu od 1 do 1000.");
     } else {
-      setError("Proszę wpisać poprawne ID (liczba całkowita).");
+      setError("")
+      router.push(`/details/${id}`)
+      setId("")
     }
   };
+
+  const handleClearId = () => {
+    setId("")
+    setError("")
+  }
 
   return (
     <View style={styles.container}>
@@ -31,8 +42,12 @@ export default function HomeScreen() {
       />
       {error ? <Text style={styles.error}>{error}</Text> : null}
       <Button
+        title="Wyczyść"
+        onPress={handleClearId}
+      />
+      <Button
         title="Przejdź"
-        onPress={handleNavigate} />
+        onPress={handleSetId} />
     </View>
   );
 }
@@ -44,11 +59,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: 'lightgray',
     padding: 20,
+    gap: 20,
   },
   title: {
     fontSize: 20,
     fontWeight: 700,
-    marginBottom: 20,
   },
   input: {
     height: 40,
@@ -57,7 +72,6 @@ const styles = StyleSheet.create({
     borderColor: "red",
     borderRadius: 20,
     padding: 10,
-    marginBottom: 20,
     backgroundColor: "white",
   },
   error: {
